@@ -1,0 +1,191 @@
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&display=swap");
+
+// themes - our custom or/and out of the box themes
+@import "themes";
+
+// framework component themes (styles tied to theme variables)
+@import "~@nebular/theme/styles/globals";
+@import "~@nebular/auth/styles/all";
+
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+@import "~bootstrap/scss/grid";
+
+// loading progress bar theme
+@import "./pace.theme";
+
+@import "./layout";
+@import "./overrides";
+@import "./_messages";
+
+@import "~@ng-select/ng-select/themes/material.theme.css";
+
+// install the framework and custom global styles
+@include nb-install() {
+  // framework global styles
+  @include nb-theme-global();
+  @include nb-auth-global();
+
+  @include ngx-layout();
+  // loading progress bar
+  @include ngx-pace-theme();
+
+  @include nb-overrides();
+}
+
+.grecaptcha-badge {
+  display: none;
+}
+
+/* Importing Bootstrap SCSS file. */
+@import "~bootstrap/scss/bootstrap";
+
+/* Mixin */
+/* Set các giá trị với màn hình tương ứng */
+$mobile-width: 480px;
+$tablet-width: 768px;
+$desktop-width: 1024px;
+
+@mixin mobile {
+  @media (max-width: #{$mobile-width - 1px}) {
+    @content;
+  }
+}
+
+@mixin small-tablet {
+  @media (min-width: #{$mobile-width}) and (max-width: #{$tablet-width - 1px}) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: #{$tablet-width}) and (max-width: #{$desktop-width - 1px}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{$desktop-width}) {
+    @content;
+  }
+}
+
+// Modal center
+nb-card-body{
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.modal-center-screen {
+  .modal-dialog {
+    display: flex;
+    height: 88vh;
+    justify-content: center;
+    align-items: center;
+  }
+}
+:host /deep/ ng2-st-tbody-edit-delete {
+  display: flex !important;
+  height: 0 !important;
+}
+
+:host /deep/ tr.is-deleted{
+  background-color: #ffc409 !important;
+}
+
+:host /deep/ tr.is-deleted:hover{
+  background-color: #ffc409 !important;
+}
+
+:host /deep/ th.ng-star-inserted {
+  text-align: center;
+  font-weight: bold;
+
+  a.ng2-smart-sort-link {
+    font-weight: bold;
+  }
+
+  input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+    margin-left: 6px;
+  }
+}
+
+:host /deep/ tr.ng-star-inserted {
+  background: #fff;
+}
+
+:host /deep/ td.ng2-smart-actions.ng-star-inserted:nth-last-child(1) {
+  min-width: 160px !important;
+}
+
+:host /deep/ ng2-st-tbody-custom a.ng2-smart-action {
+  text-align: center;
+}
+
+:host /deep/ ng2-st-tbody-custom a.ng2-smart-action.ng2-smart-action-custom-custom {
+  display: inline-block;
+  width: 20%;
+  text-align: center;
+  font-size: 18px !important;
+  position: relative;
+
+  i {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+:host
+  /deep/
+  ng2-st-tbody-custom
+  a.ng2-smart-action.ng2-smart-action-custom-custom:hover {
+  color: rgb(51, 102, 255);
+}
+
+:host /deep/ td.ng2-smart-action-multiple-select > input {
+  height: 15px;
+  width: max-content;
+  margin: auto;
+}
+
+
+
+.info-active {
+  margin: 20px 0;
+  display: flex;
+
+  .status {
+    cursor: pointer;
+    font-size: 16px;
+    margin-right: 50px;
+    padding: 5px 0;
+    transition: 0.2s ease-in-out;
+  }
+  .status.isactive {
+    background-color: rgb(51, 102, 255);
+    box-shadow: 0 2px 5px 0px rgb(162, 160, 160);
+    padding: 5px 20px;
+    border-radius: 20px;
+    color: white;
+  }
+}
+
+.modal-title {
+  font-size: 20px;
+  font-family: "Avenir Heavy";
+}
+
+.job-posting-title {
+  display: flex;
+  white-space: nowrap;
+  align-items: center;
+}
+
+.urgent, .feature, .private {
+  margin-left: 10px;
+}

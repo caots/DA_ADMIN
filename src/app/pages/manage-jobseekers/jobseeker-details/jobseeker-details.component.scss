@@ -1,0 +1,82 @@
+.form-info {
+  margin: 30px 0;
+  box-shadow: 0 2px 48px 0 rgba(0, 0, 0, 0.1);
+  padding: 20px;
+
+  .wrapper-form {
+    display: flex;
+
+    form {
+      width: 60%;
+
+      .form-group {
+        margin-bottom: 25px;
+
+        [type="file"] {
+          height: 0;
+          overflow: hidden;
+          width: 0 !important;
+        }
+
+        label {
+          font-weight: 600;
+        }
+
+        .btn-cancel-upload-file {
+          margin-left: 6px;
+        }
+
+        .note-select-avatar{
+          color: #ffc409;
+          font-size: 13px;
+          margin-bottom: 10px;
+        }
+
+
+        input,
+        textarea {
+          display: block;
+          font-weight: 500;
+        }
+      }
+      .deactive-acount {
+        margin-bottom: 30px;
+        span {
+          color: #e61111;
+          font-weight: 600;
+          text-decoration: none;
+          font-size: 16px;
+        }
+        span:hover {
+          color: #c30404;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+
+  .form-group.form-group-button {
+    display: flex;
+
+    button {
+      margin-right: 15px;
+      box-shadow: 0 2px 5px 0px #a2a0a0
+    }
+  }
+}
+
+.text-danger {
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.text-required {
+  color: red;
+}
+.preview{
+  pointer-events: none;
+}
+
+.jobseeker {
+  font-size: 1.2rem;
+}

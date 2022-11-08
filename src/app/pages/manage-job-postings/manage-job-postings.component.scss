@@ -1,0 +1,105 @@
+@import "../../@theme/styles/styles.scss";
+
+.group-search {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin: 20px 0;
+
+  nb-form-field.search-input {
+    margin-right: 15px;
+    display: inline-flex;
+  }
+
+  button {
+    margin-bottom: 5px;
+    margin-right: 15px;
+  }
+
+  button.btn-search-data {
+    border-radius: 20px;
+    padding: 10px 25px;
+  }
+}
+
+button {
+  &.active {
+    color: #3366ff !important;
+  }
+}
+
+h6 {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.tables-job-postings {
+  margin: 30px 0;
+  box-shadow: 0 2px 48px 0 rgba(0, 0, 0, 0.1);
+}
+
+.check-box__item {
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+  margin: 0 0 10px 0;
+  @media (max-width: 768px) {
+    width: 50%;
+    margin: 0 0 20px 0;
+  }
+
+  &.other {
+    flex-wrap: wrap;
+    .specify {
+      width: 100%;
+      margin-top: 10px;
+      margin-bottom: 15px;
+    }
+  }
+
+  &.badge {
+    border: none;
+    margin-top: 40px;
+    .text-checkbox {
+      font-size: 16px;
+    }
+
+    .svg-icon {
+      margin-left: 10px;
+      position: relative;
+      top: -3px;
+    }
+  }
+  input:checked + .check-icon-custom {
+    &::after {
+      display: block;
+    }
+  }
+  .check-icon-custom {
+    display: block;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #d9d9d9;
+    margin-right: 10px;
+    position: relative;
+    &:after {
+      content: "";
+      display: block;
+      position: absolute;
+      top: 2px;
+      left: 6px;
+      width: 6px;
+      height: 14px;
+      border: solid #0079bf;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+      display: none;
+    }
+  }
+}
+
+.job-posting-title {
+  display: flex;
+  white-space: nowrap;
+  align-items: center;
+}

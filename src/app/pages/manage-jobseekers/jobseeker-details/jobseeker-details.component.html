@@ -1,0 +1,128 @@
+<nb-card
+  [nbSpinner]="isLoading"
+  nbSpinnerStatus="primary"
+  nbSpinnerSize="large"
+>
+  <nb-card-body>
+    <div class="header">
+      <h5>Manage Job Seekers</h5>
+      <p class="jobseeker">{{ jobseeker && jobseeker.first_name}} -  {{ jobseeker && jobseeker.last_name }}</p>
+    </div>
+    <div class="form-info">
+      <div class="wrapper-form row">
+        <form class="col-sm-12" method="post" [formGroup]="formDetailsJobSeeker">
+          <div class="form-group">
+            <label for="logo">Profile Picture:</label>
+            <img *ngIf="showImageFirst && jobseeker" [src]="jobseeker.profile_picture? jobseeker.profile_picture : 'assets/images/no-avatar.png' "
+              alt="profile picture" style="width: 100px; display: block;margin-top: 10px;">
+            <input type="file" id="imageUpload" (change)="handleFileLogoInput($event)"/>
+            <!-- cropper image -->
+            <image-cropper
+              style="padding-left: 0; width: 50%;"
+              [imageChangedEvent]="imageChangedEvent"
+              [maintainAspectRatio]="true"
+              [aspectRatio]="1/1"
+              format="png,jpeg,webp,bmp,ico"
+              (imageCropped)="imageCropped($event)"
+            ></image-cropper>
+
+            <p class="file-name-selected mb-3">{{ fileNameSelected }}</p>
+            <div class="mt-3">
+              <label *ngIf="!isPreview" for="imageUpload" [ngClass]="['btn btn-success', isPreview ? 'preview' : '']" style="cursor: pointer;margin-bottom: 0;">Select file</label>
+              <button class="btn-cancel-upload-file btn btn-light" type="button"
+                *ngIf="formDetailsJobSeeker.value.profile_picture" (click)="cancelImage()">
+                Cancel
+              </button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="name">First name: <sup class="text-required">*</sup></label>
+            <input type="text" [ngClass]="[isPreview ? 'preview' : '']" formControlName="first_name" id="name" nbInput fullWidth fieldSize="medium" placeholder="name" />
+            <div class="text-danger" *ngIf=" formDetailsJobSeeker.controls.first_name.touched && formDetailsJobSeeker.controls.first_name.errors?.required ">
+              First Name is required!
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="name">Last name: <sup class="text-required">*</sup></label>
+            <input type="text" [ngClass]="[isPreview ? 'preview' : '']" formControlName="last_name" id="name" nbInput fullWidth fieldSize="medium" placeholder="name" />
+            <div class="text-danger" *ngIf=" formDetailsJobSeeker.controls.last_name.touched && formDetailsJobSeeker.controls.last_name.errors?.required ">
+              Last name is required!
+            </div>
+          </div>
+          <div class="form-group preview">
+            <label for="phone">Phone No:</label><br />
+            <input class="form-control" ng2TelInput *ngIf="jobseeker"
+              [ng2TelInputOptions]="{
+                initialCountry: jobseeker.region_code,
+                onlyCountries: listPhoneCountry
+              }"
+              (countryChange)="countryChange($event)"
+              name="" formControlName="phone_number" placeholder="Phone number" fieldSize="medium" type="text"
+              style="width: 100%; background-color: #f7f9fc;"
+            />
+            <div
+              class="text-danger"*ngIf="formDetailsJobSeeker.controls.phone_number.errors?.wrongNumber">
+              Phone number must be a valid!
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="email">Email: <sup class="text-required">*</sup></label>
+            <input type="text" formControlName="email" id="email" nbInput fullWidth fieldSize="medium" placeholder="Email" class="preview"/>
+            <div
+              class="text-danger"
+              *ngIf="formDetailsJobSeeker.controls.email.touched &&formDetailsJobSeeker.controls.email.errors?.required">
+              Email is required!
+            </div>
+            <div class="text-danger" *ngIf="formDetailsJobSeeker.get('email')?.errors?.pattern">
+              Email must be a valid !
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="address">City:</label>
+            <input type="text" formControlName="city_name" [ngClass]="[isPreview ? 'preview' : '']"
+              nbInput fullWidth fieldSize="medium" placeholder="City name"
+            />
+          </div>
+          <div class="form-group">
+            <label for="address">State:</label>
+            <input type="text" formControlName="state_name" [ngClass]="[isPreview ? 'preview' : '']"
+              nbInput fullWidth fieldSize="medium" placeholder="State name"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="askingSalary">Asking Salary:</label>
+            <textarea formControlName="asking_salary" nbInput id="askingSalary" fullWidth type="number" [ngClass]="[isPreview ? 'preview' : '']"></textarea>
+            <div class="text-danger" *ngIf="formDetailsJobSeeker.get('asking_salary')?.errors?.pattern">
+              Asking Salary must be a number!
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="askingBenefits">Asking Benefits: </label>
+            <textarea formControlName="asking_benefits" nbInput id="askingBenefits" fullWidth [ngClass]="[isPreview ? 'preview' : '']"></textarea>
+            <!-- <div class="text-danger" *ngIf="formDetailsJobSeeker.get('asking_benefits')?.errors?.pattern">
+              Asking Benefits must be a number!
+            </div> -->
+          </div>
+          <div class="deactive-acount" *ngIf="!isPreview">
+            <span (click)="!isPreview ? onConfirmDeactiveJobseeker() : null" >{{jobseeker && statusUser === 1 ? 'Activate' : 'Deactivate'}} this account</span>
+          </div>
+        </form>
+      </div>
+      <div class="form-group form-group-button">
+        <button nbButton status="primary"
+          ngxLoadingButton [loading]="isLoading"
+          (click)="onSaveDetailsJobSeeker()"
+          [hidden]="isPreview"
+        >
+          Save
+        </button>
+        <button nbButton status="basic" (click)="onCancelDetailsJobSeeker()">
+          {{isPreview ? 'Close': 'Cancel'}}
+        </button>
+      </div>
+    </div>
+  </nb-card-body>
+</nb-card>

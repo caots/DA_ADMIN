@@ -1,0 +1,394 @@
+<nb-card [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="large">
+  <nb-card-body>
+    <div class="header">
+      <h5>Job Posting Detail</h5>
+    </div>
+    <form method="post" [formGroup]="formDetailsJobPostings" class="form-info">
+      <div class="row">
+        <div class="form-group col-sm-6 col-md-6">
+          <label for="title">Job title: <sup class="text-required">*</sup></label>
+          <input type="text" formControlName="title" id="title" [ngClass]="[isPreview ? 'preview' : '']" nbInput
+            fullWidth fieldSize="medium" placeholder="Job title" />
+          <div class="text-danger"
+            *ngIf="formDetailsJobPostings.controls.title.touched && formDetailsJobPostings.controls.title.errors?.required">
+            Title is required!
+          </div>
+
+          <div class="form-group" style="margin-top: 18px;">
+            <label for="level">Employment Type: <sup *ngIf="!isFromCrawlJob" class="text-required">*</sup></label>
+            <select class="form-control" formControlName="employment_type">
+              <option *ngFor="let level of typeEmployment" [value]="level.id">{{level.title}}</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-top: 18px;">
+            <label for="desciption">Job Desciption: <sup *ngIf="!isFromCrawlJob"  class="text-required">*</sup></label>
+            <textarea style="min-height: 200px;" formControlName="desciption" nbInput id="desciption" fullWidth placeholder="Job desciption"
+              [ngClass]="[isPreview ? 'preview' : '']"></textarea>
+            <div class="text-danger"
+              *ngIf="formDetailsJobPostings.controls.desciption.touched && formDetailsJobPostings.controls.desciption.errors?.required">
+              Desciption is required!
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="desciption">What category does this job fall under?</label>
+              <div class="wrapper-fall-under" *ngIf="listFallUnder">
+                <ng-select 
+                  [ngClass]="[isPreview ? 'preview' : '']"
+                  [items]="listFallUnder"
+                  formControlName="jobCategory">
+                </ng-select>
+              </div>
+          </div>
+
+          <div class="form-group">
+            <label>Workplace Setting<span class="text-danger" *ngIf="jobPosting?.is_private != 1 && !isFromCrawlJob">*</span></label>
+            <div class="box-travel">
+              <div>
+                <div class="form-check mb-2">
+                  <label class="form-check-label" for="onsite">
+                    Onsite
+                  </label>
+                  <input class="form-check-input" type="radio" name="percentTravel" value="0" id="onsite"
+                    formControlName="percentTravel" [checked]="isPercent == 0">
+                </div>
+                <div class="form-check">
+                  <label class="form-check-label" for="remote">
+                    Remote
+                  </label>
+                  <input class="form-check-input" type="radio" name="percentTravel" value="1" id="remote"
+                    formControlName="percentTravel" [checked]="isPercent == 1">
+                </div>
+                <div class="form-check" style="margin-top: 10px">
+                  <label class="form-check-label" for="hybrid">
+                    Hybrid Onsite/Remote
+                  </label>
+                  <input class="form-check-input" type="radio" name="percentTravel" value="2" id="hybrid"
+                    formControlName="percentTravel" [checked]="isPercent == 2">
+                </div>
+                <!-- </div> -->
+                <!-- <div class="specific-travel">
+                  <div class="box-specific">
+                    <input type="checkbox" (change)="changeSpecify($event)" [checked]="isSpecificPercentTravel">
+                    <label for="inputPassword" class="col-form-label">Specific Percent Travel</label>
+                    <div class="specific-value">
+                      <div class="box-select-percent">
+                        <input type="number" class="form-control" formControlName="specific_percent_travel" id="title" nbInput fullWidth fieldSize="small" />
+                        <button type="button" class="btn-increase" (click)="increasePercentTravel(true)">
+                          <i class="fas fa-chevron-up"></i>
+                        </button>
+                        <button type="button" class="btn-decrease" (click)="increasePercentTravel(false)">
+                          <i class="fas fa-chevron-down"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div> -->
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="inputAddress">Percent Travel</label>
+            <select class="form-control" formControlName="specificPercentTravelType">
+              <option value="">--Select--</option>
+              <option *ngFor="let travel of JOB_PERCENT_TRAVEL_TYPE" [value]="travel.id">{{travel.value}}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="state">State: <sup class="text-required" *ngIf="jobPosting?.is_private != 1 && !isFromCrawlJob">*</sup></label>
+            <!-- <input type="text" class="form-control" [ngbTypeahead]="selectState" formControlName="state"
+              [ngClass]="[isPreview ? 'preview' : '']" *ngIf="listState.length" msIgnoreEmojiIcon> -->
+              <ng-select
+              (change)="selectState($event)"
+              [ngClass]="[isPreview ? 'preview' : '']"
+              [items]="listState"
+              formControlName="state"
+              [clearable]="formDetailsJobPostings.get('state').value"
+              ></ng-select>
+            <div class="text-danger"
+              *ngIf="formDetailsJobPostings.controls.state.touched && formDetailsJobPostings.controls.state.errors?.required">
+              State is required!
+            </div>
+          </div>
+
+          <div class="form-group" [style]="!formDetailsJobPostings.get('state').value || isDisableSelectDC ? 'pointer-events: none;': ''">
+            <label for="city">City: <sup class="text-required" *ngIf="jobPosting?.is_private != 1 && !isFromCrawlJob">*</sup></label>
+            <!-- <input type="text" class="form-control" [ngbTypeahead]="selectCountry" formControlName="city"
+              [ngClass]="[isPreview ? 'preview' : '']" *ngIf="listCountry.length" msIgnoreEmojiIcon> -->
+              <ng-select
+              [items]="listCity"
+              bindLabel="name"
+              bindValue="name"
+              formControlName="city"
+              [ngClass]="[isPreview ? 'preview' : '']"
+              [clearable]="formDetailsJobPostings.get('city').value"
+            >
+            </ng-select>
+            <div class="text-danger"
+              *ngIf="formDetailsJobPostings.controls.city.touched && formDetailsJobPostings.controls.city.errors?.required">
+              City is required!
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="level">Job level: </label>
+            <select class="form-control" formControlName="level">
+              <option value>--Select--</option>
+              <option *ngFor="let level of listLevel" [value]="level.id">{{level.name}}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="openings">Number of openings: <sup class="text-required"
+                *ngIf="jobPosting?.is_private != 1 && !isFromCrawlJob">*</sup></label>
+            <input type="number" formControlName="openings" id="openings" [ngClass]="[isPreview ? 'preview' : '']" nbInput
+              fullWidth fieldSize="medium" placeholder="Number of openings" />
+            <div class="text-danger"
+              *ngIf="formDetailsJobPostings.controls.openings.touched && formDetailsJobPostings.controls.openings.errors?.required">
+              openings is required!
+            </div>
+            <div class="text-danger"
+              *ngIf="formDetailsJobPostings?.controls?.openings?.touched && formDetailsJobPostings?.controls?.openings?.errors?.min">
+              Number of openings must be greater than {{openingNumberRange.MIN}}!
+            </div>
+            <div class="text-danger"
+              *ngIf="formDetailsJobPostings?.controls?.openings?.touched && formDetailsJobPostings?.controls?.openings?.errors?.max">
+              Number of openings must be less than {{openingNumberRange.MAX}}!
+            </div>
+          </div>
+
+          <div class="form-group" *ngIf="jobPosting?.is_private != 1">
+            <label for="inputPassword4">Expiration Date:</label>
+            <input nbInput placeholder="Pick Date" [nbDatepicker]="fromDate" formControlName="dateExpiration"
+              value="{{ fromDateModel | date: 'MM/dd/yyyy' }}" disabled />
+            <nb-datepicker #fromDate format="MM/dd/yyyy"></nb-datepicker>
+          </div>
+
+          <div class="form-group">
+            <div class="row">
+              <div class="form-group col-lg-12 col-md-12">
+                <label for="inputPassword4">Proposed Compensation:</label>
+                <div style="display: flex;">
+                  <div style="width: 112px;">
+                    <nb-select [(selected)]="isTypeProposed" (selectedChange)="onChange($event)" style="width: 118px;">
+                      <nb-option *ngFor="let level of typeProposed" [value]="level.id">{{level.title}}</nb-option>
+                    </nb-select>
+                  </div>
+                  <div class="input-with-dollar-sign" *ngIf="isTypeProposed == 0" style="margin-left: 30px;">
+                    <input type="text" class="form-control" formControlName="salary" ngxNumbersOnly
+                      [isFormatNumber]="true">
+                  </div>
+                  <div style="display: flex;" *ngIf="isTypeProposed == 1">
+                    <div style="display: flex;">
+                      <label class="form-label col-lg-5" style="margin-top: 8px;">Min</label>
+                      <div class="input-with-dollar-sign" style="margin-left: 4px;">
+                        <input type="text" class="form-control" formControlName="salary_min" ngxNumbersOnly
+                          [isFormatNumber]="true">
+                      </div>
+                    </div>
+                    <div style="display: flex; margin-left: 6px;">
+                      <label class="form-label col-lg-5" style="margin-top: 8px;">Max</label>
+                      <div class="input-with-dollar-sign" style="margin-left: 4px;">
+                        <input type="text" class="form-control" formControlName="salary_max" ngxNumbersOnly
+                          [isFormatNumber]="true">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group col-lg-4 col-md-12">
+                <nb-select [(selected)]="isSalary" class="position-select" (selectedChange)="changeSalaryType($event)">
+                  <nb-option *ngFor="let p of listSalaryType" [value]="p.id">{{ p.title }}</nb-option>
+                </nb-select>
+              </div>
+            </div>
+            <div class="text-danger" *ngIf="warningSalary && !isFromCrawlJob" style="margin-top: -15px;">{{warningSalary}}</div>
+          </div>
+
+          <div class="additional-info">
+            <p class="title-bonus font-heavy">Bonus</p>
+            <div class="box-check-list">
+              <label class="check-box__item" *ngFor="let item of listBonus; let i=index"
+                [ngClass]="{other : item.id == otherOption.bonus}">
+                <input type="checkbox" (change)="changeBonus($event, item)" [checked]="item.isSelected" hidden>
+                <span class="check-icon-custom"></span>
+                <span class="text-checkbox" *ngIf="item.id != otherOption.bonus">{{item.title}}</span>
+                <span class="text-checkbox" *ngIf="item.id == otherOption.bonus">Other:</span>
+                <div class="specify" *ngIf="item.id == otherOption.bonus">
+                  <textarea class="form-control" rows="2" placeholder="Please specify:"
+                    formControlName="otherBonus"></textarea>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-sm-6 col-md-6">
+
+          <div class="additional-info" style="margin-top: 30px;">
+            <p>What is the schedule for this job<span class="text-danger" *ngIf="jobPosting?.is_private != 1 && !isFromCrawlJob">*</span>
+            </p>
+            <div class="list-schedule">
+              <div class="">
+                <div class="box-check-list">
+                  <label class="check-box__item" *ngFor="let item of listSchedule"
+                    [ngClass]="{other : item.id == otherOption.schedule}">
+                    <input type="checkbox" hidden (change)="changeSchedule($event, item)" [checked]="item.isSelected">
+                    <span class="check-icon-custom"></span>
+                    <span class="text-checkbox" *ngIf="item.id != otherOption.schedule">{{item.title}}</span>
+                    <span class="text-checkbox" *ngIf="item.id == otherOption.schedule">Other</span>
+                    <div class="specify" *ngIf="item.id == otherOption.schedule">
+                      <textarea class="form-control" rows="2" placeholder="Please specify:"
+                        formControlName="otherSchedule"></textarea>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="text-danger" 
+            *ngIf="isSubmit && (jobPosting.is_private != 1 && !isFromCrawlJob && (!listScheduleCallApi || listScheduleCallApi?.length == 0))">schedule is required!</div>
+          </div>
+         
+          <div class="additional-info" style="margin-top: 92px;">
+            <p>Benefits</p>
+            <div class="list-schedule">
+              <div class="">
+                <div class="box-check-list">
+                  <label class="check-box__item" *ngFor="let item of listBenefits">
+                    <input type="checkbox" (change)="changeBenefits($event, item)" [checked]="item.isSelected" hidden>
+                    <span class="check-icon-custom"></span>
+                    <span class="text-checkbox">{{item.title}}</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="jobPosting?.is_private != 1">
+            <label class="check-box__item badge">
+              <input type="checkbox" [checked]="isHiring" (change)="change($event)" [disabled]="isFromCrawlJob != '1'" style="width: 31px;
+              margin-left: -19px;">
+              <!-- <span class="check-icon-custom"></span> -->
+              <span class="text-checkbox font-heavy">Add Urgent Hiring Badge </span>
+              <div class="svg-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" id="Capa_1" enable-background="new 0 0 496.615 496.615"
+                  height="30" viewBox="0 0 496.615 496.615" width="30">
+                  <path d="m255.05 78.861h54.819v183.079h-54.819z" fill="#e19974" />
+                  <g>
+                    <g>
+                      <path d="m378.156 300.01c14.525 0 26.3 11.775 26.3 26.3s-11.775 26.3-26.3 26.3h-101.318v-52.6z"
+                        fill="#ffcebf" />
+                    </g>
+                    <path
+                      d="m367.512 300.01c14.525 0 26.3-11.775 26.3-26.299 0-14.525-11.775-26.3-26.3-26.3h-67.966v52.599z"
+                      fill="#ffcebf" />
+                    <g>
+                      <g id="XMLID_385_">
+                        <g>
+                          <path
+                            d="m286.82 328.399v125.91h-32.72-58.55c-28.69 0-53.17-18.03-62.72-43.38h-113.507c-2.829 0-5.123-2.294-5.123-5.123v-83.377-55.377c0-2.829 2.294-5.123 5.123-5.123h110.687c3.15 0 6.171-1.251 8.399-3.479l41.525-41.525c10.332-10.332 24.345-16.136 38.956-16.136h67.93z"
+                            fill="#ffdfcf" />
+                        </g>
+                      </g>
+                    </g>
+                    <path
+                      d="m195.55 392.07c-22.235 0-41.941-10.829-54.128-27.503-7.39-10.109-19.335-15.878-31.857-15.878h-90.242c-2.829 0-5.123-2.294-5.123-5.123v62.239c0 2.829 2.294 5.123 5.123 5.123h113.507c9.55 25.35 34.03 43.38 62.72 43.38h58.55 32.72v-62.238h-32.72z"
+                      fill="#ffcebf" />
+                    <path
+                      d="m255.05 473.56c0 12.733 10.322 23.055 23.055 23.055h8.709c12.733 0 23.055-10.322 23.055-23.055v-13.756-183.105h-54.819z"
+                      fill="#e19974" />
+                    <path
+                      d="m255.05 340.018c4.458-1.21 8.738-2.854 12.793-4.885 1.548 5.957 4.209 11.554 7.836 16.578-5.567 7.642-8.864 17.04-8.864 27.198 0 9.763 3.045 18.824 8.225 26.299-5.179 7.476-8.225 16.537-8.225 26.3 0 24.312 18.839 44.292 42.684 46.145.238-1.329.369-2.695.369-4.093v-13.756-183.105h-54.818z"
+                      fill="#dc8758" />
+                    <path
+                      d="m286.23 273.109c0 27.24-22.09 49.32-49.33 49.32h-29.38-193.32v-54.58c0-3.27 2.651-5.92 5.92-5.92h109.89c3.15 0 6.171-1.251 8.399-3.479l41.525-41.525c10.332-10.332 24.345-16.136 38.956-16.136h86.87c22.55 0 40.83 18.28 40.83 40.83v80.206c0 16.511-13.008 30.422-29.515 30.777-8.604.185-16.4-3.228-22.005-8.833-5.46-5.46-8.84-13.01-8.84-21.34z"
+                      fill="#ffdfcf" />
+                    <path d="m255.05 78.861h54.819v81.964h-54.819z" fill="#dc8758" />
+                    <path
+                      d="m470.824 135.825h-374.728c-6.401 0-11.591-5.189-11.591-11.591v-112.643c0-6.402 5.19-11.591 11.591-11.591h374.728c6.401 0 11.591 5.189 11.591 11.591v112.644c0 6.401-5.19 11.59-11.591 11.59z"
+                      fill="#faf7f7" />
+                    <path
+                      d="m205.501 124.234v-112.643c0-6.402 5.189-11.591 11.591-11.591h-120.996c-6.402 0-11.591 5.189-11.591 11.591v112.644c0 6.401 5.189 11.591 11.591 11.591h120.995c-6.401-.001-11.59-5.19-11.59-11.592z"
+                      fill="#f3eae6" />
+                    <g fill="#fe646f">
+                      <path
+                        d="m193.131 27.533c-4.143 0-7.5 3.358-7.5 7.5v25.87h-20.606v-25.87c0-4.142-3.357-7.5-7.5-7.5s-7.5 3.358-7.5 7.5v66.739c0 4.142 3.357 7.5 7.5 7.5s7.5-3.358 7.5-7.5v-25.87h20.606v25.87c0 4.142 3.357 7.5 7.5 7.5s7.5-3.358 7.5-7.5v-66.739c0-4.142-3.358-7.5-7.5-7.5z" />
+                      <path
+                        d="m251.346 42.533c4.143 0 7.5-3.358 7.5-7.5s-3.357-7.5-7.5-7.5h-28.672c-4.143 0-7.5 3.358-7.5 7.5v66.739c0 4.142 3.357 7.5 7.5 7.5h28.672c4.143 0 7.5-3.358 7.5-7.5s-3.357-7.5-7.5-7.5h-21.172v-18.37h13.398c4.143 0 7.5-3.358 7.5-7.5s-3.357-7.5-7.5-7.5h-13.398v-18.37h21.172z" />
+                      <path
+                        d="m308.712 94.273h-20.439v-59.24c0-4.142-3.357-7.5-7.5-7.5s-7.5 3.358-7.5 7.5v66.739c0 4.142 3.357 7.5 7.5 7.5h27.939c4.143 0 7.5-3.358 7.5-7.5s-3.358-7.499-7.5-7.499z" />
+                      <path
+                        d="m351.305 27.533h-13.207c-5.768 0-10.46 4.692-10.46 10.459v63.78c0 4.142 3.357 7.5 7.5 7.5s7.5-3.358 7.5-7.5v-20.36h8.667c14.855 0 26.94-12.085 26.94-26.94s-12.084-26.939-26.94-26.939zm0 38.88h-8.667v-23.88h8.667c6.584 0 11.94 5.356 11.94 11.939s-5.356 11.941-11.94 11.941z" />
+                      <path
+                        d="m413.061 87.041c-4.143 0-7.5 3.358-7.5 7.5v7.231c0 4.142 3.357 7.5 7.5 7.5s7.5-3.358 7.5-7.5v-7.231c0-4.142-3.357-7.5-7.5-7.5z" />
+                      <path
+                        d="m413.061 27.533c-4.143 0-7.5 3.358-7.5 7.5v30.715c0 4.142 3.357 7.5 7.5 7.5s7.5-3.358 7.5-7.5v-30.715c0-4.142-3.357-7.5-7.5-7.5z" />
+                    </g>
+                  </g>
+                  <path
+                    d="m313.115 457.808h37.967c14.525 0 26.3-11.775 26.3-26.3 0-14.525-11.775-26.3-26.3-26.3h-37.967c-14.525 0-26.3 11.775-26.3 26.3.001 14.525 11.775 26.3 26.3 26.3z"
+                    fill="#ffdfcf" />
+                  <path
+                    d="m313.115 405.208h45.657c14.525 0 26.3-11.775 26.3-26.3 0-14.525-11.775-26.3-26.3-26.3h-45.657c-14.525 0-26.3 11.775-26.3 26.3.001 14.526 11.775 26.3 26.3 26.3z"
+                    fill="#ffdfcf" />
+                  <g fill="#ffcebf">
+                    <path
+                      d="m306.43 451.123c0-14.525 11.775-26.3 26.3-26.3h37.967c2.062 0 4.075.251 6.001.7-2.713-11.637-13.153-20.315-25.616-20.315h-37.967c-14.525 0-26.3 11.775-26.3 26.3 0 12.463 8.675 22.902 20.311 25.615-.448-1.926-.696-3.938-.696-6z" />
+                    <path
+                      d="m306.43 398.523c0-14.525 11.775-26.3 26.3-26.3h45.656c2.062 0 4.076.253 6.001.702-2.713-11.637-13.153-20.316-25.616-20.316h-45.657c-14.525 0-26.3 11.775-26.3 26.3 0 12.463 8.676 22.902 20.313 25.615-.448-1.926-.697-3.939-.697-6.001z" />
+                  </g>
+                </svg>
+              </div>
+            </label>
+          </div>
+
+          <div class="d-flex box-copy" style="margin-top: 15px;" *ngIf="jobPosting?.is_private == 1"><input
+              [value]="generateLinkPrivteJob(jobPosting)" type="text" id="refer" nbInput readonly />
+            <div class="icon-copy ml-1 cursor-pointer" (click)="copyClipboard()">
+              <i class="far fa-copy" style="margin-left: 20px;
+              font-size: 26px;
+              margin-top: 4px;"></i>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+
+      <div class="form-group form-group-button" style="justify-content: center;">
+        <button nbButton type="button" status="primary" ngxLoadingButton [loading]="isLoading" (click)="onSaveDetailsJobPosting()"
+          [hidden]="isPreview">
+          Save
+        </button>
+        <button nbButton type="button" status="basic" (click)="onCancelDetailsJobPosting()">Cancel</button>
+      </div>
+    </form>
+  </nb-card-body>
+</nb-card>
+
+<ng-template #modalAddAssessment>
+  <ngx-modal-add-assessment-tag [listCategory]="listCategory" [listAssessment]="listAssessment"
+    [isFromCrawlJob]="isFromCrawlJob"
+    [listSelectedAssesment]="listSelectedAssesment" (add)="addAssessment($event)" (remove)="removeAssessment($event)"
+    (close)="modalAddAssessmentTagRef.close()">
+  </ngx-modal-add-assessment-tag>
+</ng-template>
+
+<ng-template #modalEditAssessmentTag>
+  <ngx-modal-edit-assessment-tag [assessment]="editingAssessment" (update)="updateAssessment($event)"
+    (close)="modalEditAssessmentTagRef.close()">
+  </ngx-modal-edit-assessment-tag>
+</ng-template>
+
+<ng-template #modalCopyJobTemplate>
+  <ngx-modal-list-crawl-job-previous
+    [jobPosting]="jobPosting"
+    (copyJobTemplate)="copyJobTemplate($event); modalCopyJobTemplateRef.close()"
+    (close)="modalCopyJobTemplateRef.close()">
+  </ngx-modal-list-crawl-job-previous>
+</ng-template>
+

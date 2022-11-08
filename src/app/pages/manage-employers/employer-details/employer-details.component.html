@@ -1,0 +1,260 @@
+<nb-card
+  [nbSpinner]="isLoading"
+  nbSpinnerStatus="primary"
+  nbSpinnerSize="large"
+>
+  <nb-card-body>
+    <div class="header">
+      <h5 *ngIf="!isPreview">Edit Employer</h5>
+      <h5 *ngIf="isPreview">Employer Detail</h5>
+      <p class="employer">{{ employer && employer.company_name}} </p>
+    </div>
+    <form method="post" [formGroup]="formDetailsEmployer" class="form-info">
+      <div class="form-group">
+        <label for="company-logo">Company Logo:</label>
+        <img *ngIf="showImageFirst && employer" [src]="employer.company_profile_picture? employer.company_profile_picture : 'assets/images/logo-company.png' "
+          alt="profile picture" style="width: 140px; display: block;margin-top: 10px;">
+        <input type="file" accept="image/*" id="imageUpload" (change)="handleFileLogoInput($event)" />
+        <!-- cropper image -->
+        <image-cropper
+          style="width: 30%; padding-left: 0"
+          [imageChangedEvent]="imageChangedEvent"
+          [maintainAspectRatio]="true"
+          [aspectRatio]="7 / 4"
+          format="png,jpeg,webp,bmp,ico"
+          (imageCropped)="imageCropped($event)"
+        ></image-cropper>
+        <p class="file-name-selected mb-3">{{ fileNameSelected }}</p>
+        <div class="mt-3">
+          <label for="imageUpload" [hidden]="isPreview" [ngClass]="['btn btn-success' ,isPreview ? 'preview' : '']" style="cursor: pointer; margin-bottom: 0" >
+            Select file
+          </label>
+          <button class="btn-cancel-upload-file btn btn-light" type="button"
+            *ngIf="formDetailsEmployer.value.profile_picture" (click)="cancelImage()">
+            Cancel
+          </button>
+        </div>
+
+      </div>
+      <div class="form-group">
+        <label for="company-name">Company Name: <sup class="text-required">*</sup></label>
+        <input type="text" formControlName="company_name" id="company-name"
+          [ngClass]="[isPreview ? 'preview' : '']"
+          nbInput fullWidth fieldSize="medium" placeholder="Company name"/>
+        <div class="text-danger"
+          *ngIf="formDetailsEmployer.controls.company_name.touched && formDetailsEmployer.controls.company_name.errors?.required">
+          Company is required!
+        </div>
+      </div>
+      <div class="form-group preview" *ngIf="isCrawl != '1'">
+        <label for="phone">Phone No:</label><br/>
+        <input *ngIf="employer"
+          class="form-control" ng2TelInput
+          [ng2TelInputOptions]="{
+            initialCountry: employer.region_code,
+            onlyCountries: listPhoneCountry
+          }"
+          (countryChange)="countryChange($event)"
+          name="" formControlName="phone_number" placeholder="Phone number" fieldSize="medium" type="text"
+          style="width: 100%; background-color: #f7f9fc"
+        />
+        <div class="text-danger" *ngIf="formDetailsEmployer.controls.phone_number.errors?.wrongNumber">
+          Phone number must be a valid!
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="email">Email: <sup class="text-required">*</sup></label>
+        <input type="text"  formControlName="email" id="email" nbInput fullWidth fieldSize="medium" placeholder="Email" [class]="isCrawl != '1' ? 'preview' : ''"/>
+        <div class="text-danger"
+          *ngIf="formDetailsEmployer.controls.email.touched && formDetailsEmployer.controls.email.errors?.required">
+          Email is required!
+        </div>
+        <div class="text-danger" *ngIf="formDetailsEmployer.get('email')?.errors?.pattern">
+          Email is invalid
+        </div>
+      </div>
+     
+      <div class="form-group">
+        <label for="state">State: </label>
+          <ng-select
+          style="width: 60%;"
+          (change)="selectState($event)"
+          [ngClass]="[isPreview ? 'preview' : '']"
+          [items]="listState"
+          formControlName="state_name"
+          [clearable]="formDetailsEmployer.get('state_name').value"
+          ></ng-select>
+      </div>
+
+      <div class="form-group" [style]="!formDetailsEmployer.get('state_name').value ? 'pointer-events: none;': ''">
+        <label for="city">City:</label>
+          <ng-select
+          style="width: 60%;"
+          [items]="listCity"
+          bindLabel="name"
+          bindValue="name"
+          formControlName="city_name"
+          [ngClass]="[isPreview ? 'preview' : '']"
+          [clearable]="formDetailsEmployer.get('city_name').value"
+        >
+        </ng-select>
+      </div>
+
+      <div class="form-group">
+        <label for="company-name">Address:</label>
+        <input type="text" formControlName="address_line" id="company-name"
+          [ngClass]="[isPreview ? 'preview' : '']"
+          nbInput fullWidth fieldSize="medium" placeholder="Address"/>
+      </div>
+
+      <div class="row social-link-company">
+        <div class="form-group col-sm-12 col-md-4">
+          <label>Company Website</label>
+          <div class="input-group" style="display: flex; position: relative;">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="website-url">http(s)://</span>
+            </div>
+            <input class="form-control" type="text" placeholder="Website Link" aria-describedby="website-url" formControlName="employerCompanyUrl">
+          </div>
+        </div>
+        <div class="form-group col-sm-12 col-md-4">
+          <label>Facebook Page</label>
+          <div style="display: flex; position: relative;">
+            <input  class="form-control" type="text" placeholder="Facebook Link" formControlName="employerCompanyFacebook">
+          </div>
+          <div class="text-danger" *ngIf="formDetailsEmployer?.controls?.employerCompanyFacebook?.errors?.pattern">
+            Facebook Page is invalid!
+          </div>
+        </div>
+        <div class="form-group col-sm-12 col-md-4">
+          <label>Twitter Page</label>
+          <input class="form-control" type="text" placeholder="Twitter Link" formControlName="employerCompanyTwitter">
+          <div class="text-danger" *ngIf="formDetailsEmployer?.controls?.employerCompanyTwitter?.errors?.pattern">
+            Twitter Page is invalid!
+          </div>
+        </div>
+      </div>
+
+      <div class="box-inser-photo-and-video">
+    <div class="cursor-pointer upload-item item-container" *ngFor="let item of gallery">
+      <div class="box-icon" (click)="item.type != 'video' || showModalInsertVideoLink(item, true)">
+        <label *ngIf="item.type == 'video' && item.url">link
+          <nb-icon icon="link-2-outline"></nb-icon>
+        </label>
+      </div>
+      <input type="file" id="companyPhoto-{{item.id}}" accept="image/*" class="name-image d-none"
+        (change)="onFileChangeMulti($event, item)">
+      <div class="cursor-pointer upload-item mt-10" (click)="showModalInsertVideoLink(item, false)"
+        *ngIf="item.type == 'video' && !item.url">
+        <label>
+          <nb-icon icon="link-2-outline"></nb-icon>
+          <p class="font-heavy">Video Link</p>
+        </label>
+      </div>
+      <div class="box-img" *ngIf="item.type != 'video'">
+        <div class="box-icon">
+          <label for="companyPhoto-{{item.id}}" *ngIf="item.type != 'video' && item.url">
+            <nb-icon icon="upload-outline"></nb-icon>
+          </label>
+        </div>
+        <div *ngIf="item.url" class="img-show">
+          <img [src]="item.url" style="width: 100%;" />
+          <nb-icon icon="close-circle-outline" class="btn-delete" (click)="deleteCompanyPhoto(item.id)"></nb-icon>
+        </div>
+        <div class="cursor-pointer upload-item" *ngIf="item.type != 'video' && !item.url">
+          <label for="companyPhoto-{{item.id}}">
+            <nb-icon icon="upload-outline"  *ngIf="item.type != 'video' && !item.url"></nb-icon>
+            <p class="font-heavy">Upload Photo</p>
+          </label>
+        </div>
+      </div>
+      <div class="video-box" *ngIf="item.type == 'video' && item.url">
+        <iframe [src]="item.url" width="100%" height="100" frameborder="0" webkitallowfullscreen
+          mozallowfullscreen allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+
+      <div class="form-group">
+        <label for="employee">Employee: <sup class="text-required">*</sup></label>
+        <nb-select  name="employee" formControlName="employee"  [ngClass]="[isPreview ? 'preview' : '']">
+          <nb-option value="0-1">0-1 employee</nb-option>
+          <nb-option value="2-10">2-10 employees</nb-option>
+          <nb-option value="11-50">11-50 employees</nb-option>
+          <nb-option value="51-200">51-200 employees</nb-option>
+          <nb-option value="201-500">201-500 employees</nb-option>
+          <nb-option value="501-1000">501-1000 employees</nb-option>
+          <nb-option value="1001-5000">1001-5000 employees</nb-option>
+          <nb-option value="5001-10000">5001-10000 employees</nb-option>
+          <nb-option value="10000-">10000+ employees</nb-option>
+        </nb-select>
+        <div class="text-danger"
+          *ngIf="formDetailsEmployer.controls.employee.touched && formDetailsEmployer.controls.employee.errors?.required">
+          Employee is required!
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="employee">Revenue ($ Million):</label>
+        <nb-select class="select-control" id="revenue" name="revenue" formControlName="revenue" [ngClass]="[isPreview ? 'preview' : '']">
+            <nb-option value="0-0.5"> 0 - 0.5 </nb-option>
+            <nb-option value="0.5-1"> 0.5 - 1 </nb-option>
+            <nb-option value="1-2.5"> 1 - 2.5 </nb-option>
+            <nb-option value="2.5-5"> 2.5 - 5 </nb-option>
+            <nb-option value="5-10"> 5 - 10 </nb-option>
+            <nb-option value="10-25"> 10 - 25 </nb-option>
+            <nb-option value="25-50"> 25 - 50 </nb-option>
+            <nb-option value="50-100"> 50 - 100 </nb-option>
+            <nb-option value="100-0"> > 100 </nb-option>
+          </nb-select>
+      </div>
+
+      <div class="form-group">
+        <label for="company-name">Ceo name:</label>
+        <input type="text" formControlName="ceoName" id="company-name"
+          [ngClass]="[isPreview ? 'preview' : '']"
+          nbInput fullWidth fieldSize="medium" placeholder="Ceo name"/>
+      </div>
+
+       <div class="form-group">
+        <label for="company-name">Year Founded:</label>
+        <input type="text" formControlName="yearFounded" id="company-name"
+          [ngClass]="[isPreview ? 'preview' : '']"
+          nbInput fullWidth fieldSize="medium" placeholder="Ex: 1998"/>
+        <div class="text-danger"
+          *ngIf="formDetailsEmployer.controls.yearFounded.touched && formDetailsEmployer.controls.yearFounded.errors?.pattern">
+          Year Founded is invalid!
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="company-description">Company Description: <sup class="text-required">*</sup></label>
+        <textarea style="min-height: 250px;" formControlName="description" nbInput id="company-description" fullWidth placeholder="Company description"  [ngClass]="[isPreview ? 'preview' : '']"></textarea>
+        <div class="text-danger"
+          *ngIf="formDetailsEmployer.controls.description.touched && formDetailsEmployer.controls.description.errors?.required">
+          Description is required!
+        </div>
+      </div>
+      <div class="deactive-acount" *ngIf="!isPreview && isCrawl != '1'">
+        <span (click)="!isPreview ? onConfirmDeactiveEmployer() : null">{{employer && statusUser === 1 ? 'Activate' : 'Deactivate'}} this account</span>
+      </div>
+      
+      <div *ngIf="employerId">
+        <ngx-manage-delegates [tab]="tab" [employerId]="employerId"></ngx-manage-delegates>       
+      </div>
+      
+      <div class="form-group form-group-button">
+        <button nbButton status="primary"
+          ngxLoadingButton [loading]="isLoading"
+          (click)="onSaveDetailsEmployer()"
+          [hidden]="isPreview"
+        >
+          Save
+        </button>
+        <button nbButton status="basic" (click)="onCancelDetailsEmployer()">
+          {{isPreview ? 'Close': 'Cancel'}}
+        </button>
+      </div>
+    </form>
+  </nb-card-body>
+</nb-card>

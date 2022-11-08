@@ -1,0 +1,34 @@
+label {
+  margin-top: 20px;
+}
+
+.login {
+  .btn {
+    margin-top: 30px;
+
+    &:focus {
+      outline: none;
+      box-shadow: none;
+    }
+  }
+}
+
+.forgot-pass {
+  float: right;
+}
+
+.remember {
+  margin-top: 15px;
+}
+
+.check {
+  margin-right: 5px;
+}
+
+.text-danger {
+  font-size: 12px;
+  margin-top: 10px;
+}
+::ng-deep .navigation .link nb-icon {
+  display: none !important;
+}

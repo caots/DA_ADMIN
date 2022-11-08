@@ -1,0 +1,31 @@
+<div>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Upload Photo</h4>
+    <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="border-box mb-35">
+      <div class="form-group">
+        <div class="box-upload-file">
+          <ly-img-cropper class="cropper"
+            [config]="cropConfig"
+            [(scale)]="scale"
+            (ready)="onReady($event)"
+            (minScale)="minScale = $event"
+            (cleaned)="ready = false"
+            (cropped)="imageCropped($event)"
+            (loaded)="onLoaded($event)" 
+          >
+          </ly-img-cropper>
+          <p class="file-name-selected mb-3">{{fileNameSelected}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" ngxLoadingButton [loading]="isUploading" class="btn btn-success" (click)="cropper.crop()">Save</button>
+    <button type="button" class="btn btn-danger" (click)="closeModal()">Cancel</button>
+  </div>
+</div>

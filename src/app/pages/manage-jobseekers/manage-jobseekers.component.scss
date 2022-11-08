@@ -1,0 +1,102 @@
+@import '../../@theme/styles/styles.scss';
+
+:host /deep/ td.ng2-smart-actions.ng-star-inserted:nth-last-child(1) {
+  min-width: 100px !important;
+}
+
+:host /deep/ ng2-st-tbody-custom a.ng2-smart-action.ng2-smart-action-custom-custom {
+  width: 25%;
+  &.disable-message {
+    pointer-events: none;
+  }
+  .disable-message {
+    display: none;
+  }
+}
+
+.group-search {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin: 20px 0;
+
+  nb-form-field.search-input {
+    margin-right: 10px;
+    display: inline-flex;
+  }
+
+  button{
+    margin-bottom: 5px;
+    margin-right: 15px;
+  }
+
+  button.btn-search-data {
+    border-radius: 20px;
+    padding: 10px 25px;
+  }
+
+  .filter > button {
+    padding: 9px;
+    margin-top: 2px;
+    i {
+      font-size: 20px;
+    }
+  }
+}
+
+.select-location {
+  width: 100% !important;
+}
+
+.tables-jobseeker {
+  margin: 30px 0;
+  box-shadow: 0 2px 48px 0 rgba(0, 0, 0, 0.1);
+}
+
+button {
+  &.active {
+    color: #3366ff !important;
+  }
+}
+
+
+.location-search-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+
+  .group-location{
+    width: 50%; align-items: flex-end;
+    @include tablet {
+      width: 80%;
+    }
+    @include small-tablet {
+      width: 100%;
+    }
+    .location {
+      margin-right: 20px;
+      width: 100%;
+      .text-location {
+        font-weight: 500;
+        font-size: 16px;
+      }
+    }
+  }
+
+  button.btn-search-data {
+    border-radius: 20px;
+    padding: 10px 25px;
+    border: 1px solid #dfdfdf26 !important;
+    background: #3366ff !important;
+    color: white !important;
+    height: max-content;
+    margin-right: 10px;
+  }
+}
+
+h6 {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+

@@ -1,0 +1,155 @@
+.form-info {
+  margin: 30px 0;
+  box-shadow: 0 2px 48px 0 rgba(0, 0, 0, 0.1);
+  padding: 20px;
+
+  .form-group {
+    margin-bottom: 25px;
+
+    [type="file"] {
+      height: 0;
+      overflow: hidden;
+      width: 0 !important;
+    }
+
+    label {
+      font-weight: 600;
+    }
+
+    .btn-cancel-upload-file {
+      margin-left: 6px;
+    }
+
+    .note-select-avatar{
+      color: #ffc409;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    input,
+    textarea,
+    nb-select {
+      width: 60%;
+      display: block;
+      font-weight: 500;
+    }
+  }
+
+  .form-group.form-group-button {
+    display: flex;
+    button {
+      margin-right: 15px;
+      box-shadow: 0 2px 5px 0px #a2a0a0;
+    }
+  }
+
+  .deactive-acount {
+    margin-bottom: 30px;
+    span {
+      color: #e61111;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 16px;
+    }
+    span:hover {
+      color: #c30404;
+      cursor: pointer;
+    }
+  }
+}
+
+.text-danger {
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.text-required {
+  color: red;
+}
+
+.preview{
+  pointer-events: none;
+}
+
+.employer {
+  font-size: 1.2rem;
+}
+
+.preview-company{
+  color: #2668a8;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.box-inser-photo-and-video {
+  background: var(--color-F8);
+  padding: 15px 20px;
+  display: flex;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+  .upload-item {
+    padding: 30px 5px;
+    border: 2px dashed #9e9e9e;
+    flex: 1;
+    margin: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    &:hover {
+      border: 2px dashed #4fb648;
+    }
+    label {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 22px;
+      cursor: pointer;
+      fa-icon {
+        margin-bottom: 10px;
+      }
+      p {
+        font-size: 16px;
+        color: #000;
+      }
+    }
+    .font-heavy {
+      text-align: center;
+      white-space: nowrap;
+    }
+  }
+  .item-container {
+    position: relative;
+    .box-icon {
+      display: flex;
+      justify-content: flex-end;
+      margin-right: 5px;
+      label {
+        position: absolute;
+        right: 5px;
+        top: 5px;
+      }
+    }
+  }
+}
+
+.img-show {
+  position: relative;
+  .btn-delete {
+    position: absolute;
+    right: 5px;
+    top: 2px;
+    font-size: 18px;
+    /* background-color: #eee; */
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    color: var(--color-555555);
+  }
+}

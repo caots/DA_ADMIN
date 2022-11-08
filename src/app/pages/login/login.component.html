@@ -1,0 +1,38 @@
+<div class="site-content-contain">
+  <div class="login">
+    <h4 class="font-weight-bold">Sign In</h4>
+    <form method="post" [formGroup]="formLogin" (ngSubmit)=login(formLogin.value)>
+      <label>Email Address</label>
+      <input class="form-control mb-15" formControlName="email" id="exampleInputEmail1" placeholder="" type="email" [pattern]="emailPattern">
+      <div class="text-danger"
+        *ngIf="formLogin.controls.email.touched && formLogin.controls.email.errors?.required">
+        Email is required!
+      </div>
+      <div class="text-danger"
+        *ngIf="formLogin.controls.email.touched && formLogin?.controls?.email?.errors?.pattern">
+        Email is invalid!
+      </div>
+      <label>Password</label>
+      <input class="form-control mb-15" formControlName="password" id="exampleInputPassword1" placeholder=""
+        type="password">
+      <div class="text-danger"
+        *ngIf="formLogin?.controls?.password?.errors?.required && formLogin?.controls?.password?.touched">
+        Password is required!
+      </div>
+      <div>
+        <label class="remember"><input class="check" type="checkbox" formControlName="rememberMe">Remember me</label>
+        <a class="forgot-pass remember" [routerLink]="['/auth/forgot-password']">Forgot password?</a>
+      </div>
+      <div class="flex-row-start">
+        <button type="submit"
+          ngxLoadingButton [loading]="isCallingApi"
+          nbButton class="btn-primary btn"
+          outline name="login" value="Sign in"
+        >Sign In
+        </button>
+      </div>
+      <p class="mt-20">
+      </p>
+    </form>
+  </div>
+</div>

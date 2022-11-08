@@ -1,0 +1,27 @@
+<div class="header-container">
+  <div class="logo-container">
+    <a (click)="toggleSidebar()" href="#" class="sidebar-toggle">
+      <nb-icon icon="menu-2-outline"></nb-icon>
+    </a>
+    <a class="logo" href="#" (click)="navigateHome()">Admin</a>
+  </div>
+  <!-- <nb-select [selected]="currentTheme" (selectedChange)="changeTheme($event)" status="primary">
+    <nb-option *ngFor="let theme of themes" [value]="theme.value"> {{ theme.name }}</nb-option>
+  </nb-select> -->
+</div>
+
+<div class="header-container">
+  <nb-actions size="small">
+    <!-- <nb-action class="control-item" icon="email-outline">
+    </nb-action> -->
+    <!-- <nb-action class="control-item" icon="bell-outline"></nb-action> -->
+    <nb-action class="user-action" *nbIsGranted="['view', 'user']">
+      <!-- <nb-user *ngIf="!user.acc_type || user.acc_type == 0" [nbContextMenu]="userMenu" [onlyPicture]="userPictureOnly" [name]="'Super Admin'" [picture]="'assets/images/logo-admin.png'"></nb-user>
+      <nb-user *ngIf="user.acc_type > 0" [nbContextMenu]="userMenu" [onlyPicture]="userPictureOnly" [name]="fullName" [picture]=""></nb-user> -->
+      <div class="logo-user">
+        <img [hidden]="user.acc_type > 0" src="assets/images/logo-admin.png" alt="logo admin">
+        <p>{{user.acc_type > 0 ? fullName : 'Super Admin'}}</p>
+      </div>
+    </nb-action>
+  </nb-actions>
+</div>

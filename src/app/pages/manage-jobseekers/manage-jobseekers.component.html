@@ -1,0 +1,55 @@
+<nb-card>
+  <nb-card-body>
+    <h6>Manage JobSeekers</h6>
+    <div class="info-active">
+      <div *ngFor="let tab of listTab" class="status" 
+        [ngClass]="{isactive : statusJobSeeker == tab.id}" 
+        (click)="onSelectStatusJobSeeker(tab.id)">
+        <span>{{tab.name}}</span>&nbsp;<span>({{tab.total}})</span>
+      </div>    
+    </div>
+
+    <div class="group-search">
+      <div class="search">
+        <nb-form-field class="search-input">
+          <nb-icon nbPrefix icon="search" pack="eva"></nb-icon>
+          <input type="text" nbInput shape="round" placeholder="search" [(ngModel)]="textSearchJobseeker" (keydown.enter)="searchEnterData($event)"/>
+        </nb-form-field>
+        <button nbButton (click)="searchData(0)" class="btn-search-data" status="primary" [hidden]="isShowFilter">Search</button>
+      </div>
+      <div class="filter">
+        <button nbButton [nbContextMenu]="itemsFilter" nbContextMenuTrigger="click" nbContextMenuPlacement="right" 
+          nbContextMenuTag="filter-context-menu" [ngClass]="{active: orderBy}">
+          <i class="fas fa-sort-amount-down"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="location-search-container">
+      <div>
+        <button style="border-radius: 20px;"  [hidden]="!isShowBtnDeleteAll" nbButton status="danger"(click)="deleteAll()"  ngxLoadingButton>
+          Flag for Removal
+        </button>
+        <button style="border-radius: 20px;margin-left: 10px;" [hidden]="!isShowBtnRestoreAll" 
+          nbButton status="success"(click)="restoreAll()" ngxLoadingButton>
+          Restore all
+        </button>
+      </div>
+    </div>
+
+    <div class="tables-jobseeker" [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="large">
+      <ngx-skeleton-loader count="10" appearance="line" *ngIf="isLoading" animation="pulse"
+        [theme]="{ 'border-radius': '5px',height: '30px','background-color':'white-smoke', border: '1px solid white'}"
+      ></ngx-skeleton-loader>
+      <ng2-smart-table
+        [hidden]="isLoading"
+        [settings]="settings"
+        [source]="source"
+        (custom)="onCustomAction($event)"
+        (userRowSelect)="onSelectedRowAction($event)"
+      >
+      </ng2-smart-table>
+    </div>
+    <ngx-pagigation [config]="paginationConfig" (goTo)="paginationEmployer($event)"></ngx-pagigation>
+  </nb-card-body>
+</nb-card>

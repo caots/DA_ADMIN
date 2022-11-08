@@ -1,0 +1,21 @@
+<div>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">INSERT VIDEO LINK</h4>
+    <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="border-box mb-35">
+      <div class="company-website-and-links">
+        <div class="form-group"><label>Video Link</label><input type="text" placeholder="Video link"
+            class="form-control" [(ngModel)]="linkVideo">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-success" (click)="save()">Save</button>
+    <button type="button" class="btn btn-danger" (click)="closeModal()">Cancel</button>
+  </div>
+</div>

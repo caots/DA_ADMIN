@@ -1,0 +1,23 @@
+h4 {
+  color: black;
+  font-size: 22px;
+  padding: 40px 10px;
+  font-weight: 600;
+}
+
+.modal-logout {
+  position: relative;
+  &__footer {
+    display: flex;
+    .btn {
+      height: 45px;
+      flex: 1;
+      border-radius: 0;
+      box-shadow: none;
+      border: none;
+      &.primary {
+        background: #2668a9;
+      }
+    }
+  }
+}
