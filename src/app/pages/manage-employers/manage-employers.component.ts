@@ -139,6 +139,9 @@ export class ManageEmployersComponent implements OnInit {
     }
   }
 
+  
+
+
   addClassRemoveItem() {
     if (this.listEmployers) {
       this.listEmployers.map((job, index) => {
