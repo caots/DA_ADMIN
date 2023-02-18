@@ -7,6 +7,7 @@ import { LY_THEME, LY_THEME_NAME, LyTheme2, StyleRenderer } from '@alyle/ui';
 import { LyImageCropperModule } from '@alyle/ui/image-cropper';
 import { MinimaDark, MinimaLight } from '@alyle/ui/themes/minima';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -65,6 +66,10 @@ import { ErrorInterceptor } from './error.interceptor';
   providers: [
     [LyTheme2],
     [StyleRenderer],
+    {
+      provide: LocationStrategy, 
+      useClass: HashLocationStrategy
+    },
     { provide: LY_THEME_NAME, useValue: 'minima-light' },
     { provide: LY_THEME, useClass: MinimaLight, multi: true },
     { provide: LY_THEME, useClass: MinimaDark, multi: true },
